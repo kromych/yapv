@@ -1,5 +1,5 @@
 use std::env;
-use std::io::{self, Result, Read, Write, ErrorKind};
+use std::io::{self, ErrorKind, Read, Result, Write};
 
 const CHUNK_SIZE: usize = 16 * 1204;
 
