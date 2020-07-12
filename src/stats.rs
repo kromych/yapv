@@ -1,12 +1,18 @@
-use std::io::Result;
+use std::io::{Result, Stderr, Write};
 use std::time::{Duration, Instant};
 
 use crossbeam::Receiver;
+use crossterm::{
+    cursor, execute,
+    style::{self, Color, PrintStyledContent},
+    terminal::{Clear, ClearType},
+};
 
 pub fn stats_loop(silent: bool, stats_rx: Receiver<usize>) -> Result<()> {
     let mut total_bytes = 0;
     let start = Instant::now();
     let mut timer = Timer::new();
+    let mut stderr = std::io::stderr();
 
     loop {
         let num_bytes = stats_rx.recv().unwrap();
@@ -17,11 +23,11 @@ pub fn stats_loop(silent: bool, stats_rx: Receiver<usize>) -> Result<()> {
 
         if !silent && timer.ready {
             timer.ready = false;
-            eprint!(
-                "\r{} bytes {} sec [{:.0} b/s]",
+            output_progress(
+                &mut stderr,
                 total_bytes,
                 start.elapsed().as_secs().as_time(),
-                rate_per_second
+                rate_per_second,
             );
         }
 
@@ -35,6 +41,22 @@ pub fn stats_loop(silent: bool, stats_rx: Receiver<usize>) -> Result<()> {
     }
 
     Ok(())
+}
+
+fn output_progress(stderr: &mut Stderr, bytes: usize, elapsed: String, rate: f64) {
+    let bytes = style::style(format!("{} bytes ", bytes)).with(Color::Red);
+    let elapsed = style::style(elapsed).with(Color::Green);
+    let rate = style::style(format!(" [{:.0} b/s]", rate)).with(Color::Blue);
+
+    let _ = execute!(
+        stderr,
+        cursor::MoveToColumn(0),
+        Clear(ClearType::CurrentLine),
+        PrintStyledContent(bytes),
+        PrintStyledContent(elapsed),
+        PrintStyledContent(rate)
+    );
+    let _ = stderr.flush();
 }
 
 trait TimeOutput {
