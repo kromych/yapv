@@ -1,5 +1,6 @@
 use std::env;
-use std::io::{self, ErrorKind, Read, Result, Write};
+use std::fs::File;
+use std::io::{self, ErrorKind, Read, Result, Write, BufReader, BufWriter};
 
 use clap::{App, Arg};
 
@@ -31,13 +32,25 @@ fn main() -> Result<()> {
         !env::var("YAPV_SILENT").unwrap_or_default().is_empty()
     };
 
-    dbg!(infile, outfile, silent);
+    //dbg!(infile, outfile, silent);
+
+    let mut reader: Box<dyn Read> = if !infile.is_empty() {
+        Box::new(BufReader::new(File::open(infile)?))
+    } else {
+        Box::new(BufReader::new(io::stdin()))
+    };
+
+    let mut writer: Box<dyn Write> = if !outfile.is_empty() {
+        Box::new(BufWriter::new(File::create(outfile)?))
+    } else {
+        Box::new(BufWriter::new(io::stdout()))
+    };
 
     let mut total_bytes = 0;
     let mut buffer = [0; CHUNK_SIZE];
 
     loop {
-        let num_read = match std::io::stdin().read(&mut buffer) {
+        let num_read = match reader.read(&mut buffer) {
             Ok(0) => break,
             Ok(x) => x,
             Err(..) => break,
@@ -49,7 +62,7 @@ fn main() -> Result<()> {
             eprint!("\rread:{}", total_bytes);
         }
 
-        if let Err(e) = io::stdout().write_all(&buffer[..num_read]) {
+        if let Err(e) = writer.write_all(&buffer[..num_read]) {
             if e.kind() == ErrorKind::BrokenPipe {
                 break;
             }
