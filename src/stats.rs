@@ -1,3 +1,6 @@
+//! YAPV's stat module documentation
+//! # Stat module
+
 mod timer;
 
 use std::io::{Result, Stderr, Write};
@@ -63,11 +66,21 @@ fn output_progress(stderr: &mut Stderr, bytes: usize, elapsed: String, rate: f64
     let _ = stderr.flush();
 }
 
-trait TimeOutput {
+/// TimeOutput adds a `fn as_time(&self) -> String` method for u64
+///
+/// # Example
+/// Here is an example of how to use it
+///
+/// ```rust
+///use yapv::stats::TimeOutput;
+///assert_eq!(154_u64.as_time(), String::from("0:02:34"))
+/// ```
+pub trait TimeOutput {
     fn as_time(&self) -> String;
 }
 
 impl TimeOutput for u64 {
+    /// Renders the u64 value into a time string
     fn as_time(&self) -> String {
         let (hours, left) = (*self / 3600, *self % 3600);
         let (minutes, seconds) = (left / 60, left % 60);

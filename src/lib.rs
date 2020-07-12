@@ -1,3 +1,5 @@
+//! Yet Another Pipe Viewer Documentation
+
 pub mod args;
 pub mod read;
 pub mod stats;
