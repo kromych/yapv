@@ -3,6 +3,13 @@ name = "yapv"
 version = "0.1.0"
 authors = ["kromych@github.com"]
 edition = "2018"
+description = "Yest Another Pipe Viewer"
+homepage = "https://github.com/kromych/yapv"
+repository = "https://github.com/kromych/yapv"
+readme = "Readme.md"
+keywords = ["educational", "multithreading", "file I/O", "pipe"]
+categories = ["command-line-utilities"]
+license = "MIT or Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
