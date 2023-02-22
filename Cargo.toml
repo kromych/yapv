@@ -7,7 +7,7 @@ description = "Yest Another Pipe Viewer"
 homepage = "https://github.com/kromych/yapv"
 repository = "https://github.com/kromych/yapv"
 readme = "Readme.md"
-keywords = ["educational", "multithreading", "file IO", "pipe"]
+keywords = ["educational", "multithreading", "file", "pipe"]
 categories = ["command-line-utilities"]
 license = "MIT or Apache-2.0"
 
