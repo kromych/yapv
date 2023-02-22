@@ -9,7 +9,7 @@ repository = "https://github.com/kromych/yapv"
 readme = "Readme.md"
 keywords = ["educational", "multithreading", "file", "pipe"]
 categories = ["command-line-utilities"]
-license = "MIT or Apache-2.0"
+license = "MIT"
 
 [dependencies]
 clap = { version = "4.1", features = ["derive"] }
