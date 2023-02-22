@@ -1,13 +1,14 @@
 use std::fs::File;
-use std::io::{self, BufWriter, ErrorKind, Result, Write};
+use std::io::BufWriter;
+use std::io::Write;
 
-use crossbeam::Receiver;
+use crossbeam::channel::Receiver;
 
-pub fn write_loop(outfile: &str, write_rx: Receiver<Vec<u8>>) -> Result<()> {
-    let mut writer: Box<dyn Write> = if !outfile.is_empty() {
+pub fn write_loop(outfile: Option<String>, write_rx: Receiver<Vec<u8>>) -> std::io::Result<()> {
+    let mut writer: Box<dyn Write> = if let Some(outfile) = outfile {
         Box::new(BufWriter::new(File::create(outfile)?))
     } else {
-        Box::new(BufWriter::new(io::stdout()))
+        Box::new(BufWriter::new(std::io::stdout()))
     };
 
     loop {
@@ -19,7 +20,7 @@ pub fn write_loop(outfile: &str, write_rx: Receiver<Vec<u8>>) -> Result<()> {
         }
 
         if let Err(e) = writer.write_all(&buffer) {
-            if e.kind() == ErrorKind::BrokenPipe {
+            if e.kind() == std::io::ErrorKind::BrokenPipe {
                 // Stop processing
                 return Ok(());
             }

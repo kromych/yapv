@@ -1,15 +1,20 @@
 use crate::CHUNK_SIZE;
 
 use std::fs::File;
-use std::io::{self, BufReader, Read, Result};
+use std::io::BufReader;
+use std::io::Read;
 
 use crossbeam::channel::Sender;
 
-pub fn read_loop(infile: &str, stats_tx: Sender<usize>, write_tx: Sender<Vec<u8>>) -> Result<()> {
-    let mut reader: Box<dyn Read> = if !infile.is_empty() {
+pub fn read_loop(
+    infile: Option<String>,
+    stats_tx: Sender<usize>,
+    write_tx: Sender<Vec<u8>>,
+) -> std::io::Result<()> {
+    let mut reader: Box<dyn Read> = if let Some(infile) = infile {
         Box::new(BufReader::new(File::open(infile)?))
     } else {
-        Box::new(BufReader::new(io::stdin()))
+        Box::new(BufReader::new(std::io::stdin()))
     };
 
     let mut buffer = [0; CHUNK_SIZE];

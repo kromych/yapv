@@ -1,11 +1,11 @@
-## Yet Another Pipe Viewer
+# Yet Another Pipe Viewer
 
 This is an educational project that follows the Packt's book on system programming in Rust.
 The utility is similar to pv, and outputs number of bytes processed and statistics.
 
 Command line parameters:
 
-```
+```text
 Yet Another Pipe Viewer 
 
 USAGE:
@@ -26,7 +26,7 @@ ARGS:
 
 Here is a fun example to give you an idea:
 
-```shell script
+```sh
 
 yes | target/release/yapv -o /dev/null
 
